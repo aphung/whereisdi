@@ -1,7 +1,7 @@
 _addon.name = 'WhereisDI'
 _addon.author = 'Kosumi (Asura)'
 _addon.commands = {'whereisdi','di'}
-_addon.version = 0.7
+_addon.version = 0.8
 _addon.language = 'English'
 
 require('luau')
@@ -23,9 +23,8 @@ defaults.send = true
 settings = config.load(defaults)
 config.save(settings)
 
-windower.register_event('login',function ()
+windower.register_event('load','login',function ()
     api.login(windower.ffxi.get_player().name)
-	--windower.send_command('lua r whereisdi')
 end)
 
 windower.register_event('chat message', function(message, player, mode, is_gm)
