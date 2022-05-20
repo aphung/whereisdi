@@ -24,11 +24,10 @@ local function dump(o)
 
 local M = { }
 
-function M.login(player)
-    local server = windower.ffxi.get_info().server
-    local user = player.."@"..res.servers[server].name
+function M.login(player, server_id, server_name)
+    local user = player.."@"..server_name
     local token = sha.sha256(user)
-    local body = '{"first_name":"'..player..'", "server":"'..server..'", "email":"'..user..'", "token":"'..token..'", "role":"8a1a1e19-4eb4-4779-8c1a-4024f40ed4b4"}'
+    local body = '{"first_name":"'..player..'", "server":"'..server_id..'", "email":"'..user..'", "token":"'..token..'", "role":"8a1a1e19-4eb4-4779-8c1a-4024f40ed4b4"}'
     local response_body = {}
     local res, code, response_headers = https.request{
         url = "https://api.whereisdi.com/users";
@@ -69,14 +68,10 @@ function M.get(server)
             else
                 message = result["location"]["en_us"]
             end
-        else
-            -- Nil
-            -- Return no results
+        else -- Nil
             message = "No location results available."
         end
-    else
-        -- not status 200
-        -- return error
+    else -- not 200
         message = "Unable to contact location server."
     end
 

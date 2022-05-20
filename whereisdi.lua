@@ -1,7 +1,7 @@
 _addon.name = 'WhereisDI'
 _addon.author = 'Kosumi (Asura)'
 _addon.commands = {'whereisdi','di'}
-_addon.version = 0.8
+_addon.version = 0.9
 _addon.language = 'English'
 
 require('luau')
@@ -24,7 +24,9 @@ settings = config.load(defaults)
 config.save(settings)
 
 windower.register_event('load','login',function ()
-    api.login(windower.ffxi.get_player().name)
+    if windower.ffxi.get_info().logged_in then
+        coroutine.schedule(login, 5)
+    end
 end)
 
 windower.register_event('chat message', function(message, player, mode, is_gm)
@@ -64,6 +66,11 @@ function locate(table, value)
         if table[i] == value then return true end
     end
     return false
+end
+
+function login()
+    local server_id = windower.ffxi.get_info().server
+    api.login(windower.ffxi.get_player().name, server_id, res.servers[server_id].name)
 end
 
 function isempty(s)

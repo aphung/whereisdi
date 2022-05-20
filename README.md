@@ -1,7 +1,7 @@
 # Whereisdi
 
 **Author:**  Kosumi (Asura)<br>
-**Version:**  0.7.0 BETA<br>
+**Version:**  0.9.0 BETA<br>
 **Date:** May 5, 2022<br>
 
 ## Description
@@ -39,5 +39,5 @@ For the time being, the player character Whereisdi will continue to function and
 
 ## Privacy
 
-For the purpose of tracking the Domain Invasion location for each server, this addon sends and receives data to https://www.whereisdi.com which is owned and maintained by the author of this addon. Data is only sent to whereisdi.com when a unity message is received that corresponds to one of the Unity leaders messages about Domain Invasion. During that time only the following data is sent: Server id, Player name and Domain Invasion location id. No other data is sent. You can opt out of providing data to whereisdi.com by entering the command `//di send`.
+For the purpose of tracking the Domain Invasion location for each server, this addon sends and receives data to whereisdi.com which is owned and maintained by the author of this addon. Data is only sent to whereisdi.com when a unity message is received that corresponds to one of the Unity leaders messages about Domain Invasion. During that time only the following data is sent: Server id, Player name and Domain Invasion location id. No other data is sent. You can opt out of providing data to whereisdi.com by entering the command `//di send`.
 
