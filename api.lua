@@ -6,7 +6,7 @@ local sha = require("sha2")
 
 local search_endpoint = "https://api.whereisdi.com/items/di_location?fields=*.*&sort=-date_created&limit=1&filter[server][_eq]="
 local location_endpoint = "https://api.whereisdi.com/items/di_location"
-debug = false
+local debug = false
 
 local function dump(o)
     if type(o) == 'table' then
@@ -29,6 +29,7 @@ function M.login(player, server_id, server_name)
     local token = sha.sha256(user)
     local body = '{"first_name":"'..player..'", "server":"'..server_id..'", "email":"'..user..'", "token":"'..token..'", "role":"8a1a1e19-4eb4-4779-8c1a-4024f40ed4b4"}'
     local response_body = {}
+    
     local res, code, response_headers = https.request{
         url = "https://api.whereisdi.com/users";
         method = "POST";
@@ -51,7 +52,6 @@ function M.get(server)
     local message = ". "
     local resp = { }
     local endpoint = search_endpoint..server
-
     local body, code, headers, status = https.request(endpoint)
 
     if code == 200 then

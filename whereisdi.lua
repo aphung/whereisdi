@@ -1,7 +1,7 @@
 _addon.name = 'WhereisDI'
 _addon.author = 'Kosumi (Asura)'
 _addon.commands = {'whereisdi','di'}
-_addon.version = 0.9
+_addon.version = 1.0
 _addon.language = 'English'
 
 require('luau')
@@ -15,8 +15,6 @@ local status = { "0000002e,00000120,00000000,0000000a", "0000002d,00000120,00000
     "0000002e,00000123,00000002,0000000a", "0000002d,00000123,00000002,00000002", "0000002f,00000123,00000002,00000002", "00000031,00000123,00000002,00000002",
     "0000002f,00000123,00000002,00000003", "00000031,00000123,00000002,00000003" }
 
-show_unity_log = false
-
 --Config
 defaults = { }
 defaults.send = true
@@ -25,6 +23,7 @@ config.save(settings)
 
 windower.register_event('load','login',function ()
     if windower.ffxi.get_info().logged_in then
+        log('Thank you for using Whereisdi! Use command //di to get the latest location information.')
         coroutine.schedule(login, 5)
     end
 end)
@@ -33,10 +32,6 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
     -- Unity Message
     if mode == 33 then 
         if settings.send then
-            if show_unity_log == true then
-                local player_str = string.sub(player, 1, 15)
-                log('[LOG] Unity Chat: Name: '..player_str..' Message: '..message..'')  
-            end
             local index = string.sub(message, 18, 52)
             if locate(status, index) then
                 api.post(windower.ffxi.get_player().name, windower.ffxi.get_info().server, index)
