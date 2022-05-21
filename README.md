@@ -40,5 +40,5 @@ For the time being, the player character Whereisdi will continue to function and
 
 ## Privacy
 
-For the purpose of tracking the Domain Invasion location for each server, this addon sends and receives data to whereisdi.com which is owned and maintained by the author of this addon. Data is only sent to whereisdi.com when a unity message is received that corresponds to one of the Unity leaders messages about Domain Invasion. You can opt out of providing data to whereisdi.com by entering the command `//di send`.
+For the purpose of tracking the Domain Invasion location for each server, this addon sends and receives data to whereisdi which is owned and maintained by the author of this addon. **No personal data is sent.** Data is only sent to whereisdi when a unity message is received that corresponds to one of the Unity leaders messages about Domain Invasion. You can opt out of providing data to whereisdi.com by entering the command `//di send`.
 
