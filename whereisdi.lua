@@ -51,6 +51,8 @@ windower.register_event('addon command', function(command, ...)
             log("Disabled sending unity data.")
         end
         config.save(settings)
+    elseif command == 'mireu' then
+        log(api.get_mireu(windower.ffxi.get_info().server))
     else
         log(api.get(windower.ffxi.get_info().server))
     end
