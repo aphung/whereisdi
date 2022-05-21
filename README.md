@@ -10,6 +10,7 @@ Windower addon for getting the current location of the Domain Invasion. The data
 
 ## Installation
 
+* Download the latest version: https://github.com/aphung/whereisdi/releases
 * Copy whereisdi folder into the addons folder in your Windower install directory.
 * Manually load the addon using `//lua l whereisdi` or add `lua l whereisdi` in your init.txt file in the scripts/ folder.
 
