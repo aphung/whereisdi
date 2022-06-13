@@ -1,7 +1,7 @@
 _addon.name = 'WhereisDI'
 _addon.author = 'Kosumi (Asura)'
 _addon.commands = {'whereisdi','di'}
-_addon.version = 1.0
+_addon.version = 1.1
 _addon.language = 'English'
 
 require('luau')
@@ -34,7 +34,7 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
         if settings.send then
             local index = string.sub(message, 18, 52)
             if locate(status, index) then
-                api.post(windower.ffxi.get_player().name, windower.ffxi.get_info().server, index)
+                api.post_di_location(windower.ffxi.get_player().name, windower.ffxi.get_info().server, index)
             end
         end
     end
@@ -54,7 +54,7 @@ windower.register_event('addon command', function(command, ...)
     elseif command == 'mireu' then
         log(api.get_mireu(windower.ffxi.get_info().server))
     else
-        log(api.get(windower.ffxi.get_info().server))
+        log(api.get_di_location(windower.ffxi.get_info().server))
     end
 end)
 

@@ -6,6 +6,7 @@ local sha = require("sha2")
 
 local search_endpoint = "https://api.whereisdi.com/items/di_location?fields=*.*&sort=-date_created&limit=1&filter[server][_eq]="
 local location_endpoint = "https://api.whereisdi.com/items/di_location"
+local user_endpoint = "https://api.whereisdi.com/users"
 local mireu_endpoint = "https://api.whereisdi.com/items/di_location?fields=date_created&sort=-date_created&limit=1&filter[location][_in]=00000031000001200000000000000003,00000031000001210000000100000003,00000031000001230000000200000003&filter[server][_eq]="
 local debug = false
 
@@ -22,7 +23,6 @@ local function dump(o)
     end
  end
 
-
 local M = { }
 
 function M.login(player, server_id, server_name)
@@ -30,31 +30,15 @@ function M.login(player, server_id, server_name)
     local player_hash = string.sub(user, 1, 42)
     local token = sha.sha256(user)
     local body = '{"first_name":"Player '..player_hash..'", "server":"'..server_id..'", "email":"'..user..'", "token":"'..token..'", "role":"8a1a1e19-4eb4-4779-8c1a-4024f40ed4b4"}'
-    local response_body = {}
     
-    local res, code, response_headers = https.request{
-        url = "https://api.whereisdi.com/users";
-        method = "POST";
-        headers = {
-            ["user-agent"] = "whereisdi/0.0.1",
-            ["content-type"] = "application/json",
-            ["content-length"] = tostring(body:len()),
-        };
-        source = ltn12.source.string(body);
-        sink = ltn12.sink.table(response_body);
-    }
-
-    if debug then
-        log("Code: "..code)
-        log("Response: "..dump(response_body))
-    end
+    post(user_endpoint, token, body)
 end
 
-function M.get(server)
-    local message = ""
-    local resp = { }
+function M.get_di_location(server)
+    local message = ''
     local endpoint = search_endpoint..server
-    local body, code, headers, status = https.request(endpoint)
+
+    local code, body = get(endpoint)
 
     if code == 200 then
         local result = json.parse(body)
@@ -81,10 +65,10 @@ function M.get(server)
 end
 
 function M.get_mireu(server)
-    local message = ""
-    local resp = { }
+    local message = ''
     local endpoint = mireu_endpoint..server
-    local body, code, headers, status = https.request(endpoint)
+    
+    local code, body = get(endpoint)
 
     if code == 200 then
         local result = json.parse(body)
@@ -107,12 +91,24 @@ function M.get_mireu(server)
     return message;
 end
 
-function M.post(player, server, location)
+function M.post_di_location(player, server, location)
     local user = sha.sha256(player.."@"..res.servers[server].name)
     local player_hash = string.sub(user, 1, 42)
     local token = sha.sha256(user)
     location = location:gsub("%W","")
     local body = '{"player":"Player '..player_hash..'", "server":"'..server..'", "location":"'..location..'"}'
+
+    post(location_endpoint, token, body)
+end
+
+-- API Functions
+
+function get(url)
+    local body, code, headers, status = https.request(url)
+    return code, body    
+end
+
+function post(url, token, body)
     local response_body = {}
 
     if debug then
@@ -123,7 +119,7 @@ function M.post(player, server, location)
         url = location_endpoint;
         method = "POST";
         headers = {
-            ["user-agent"] = "whereisdi/0.0.1",
+            ["user-agent"] = "whereisdi/".._addon.version,
             ["content-type"] = "application/json",
             ["authorization"] = "Bearer "..token,
             ["content-length"] = tostring(body:len()),
@@ -136,6 +132,8 @@ function M.post(player, server, location)
         log("Code: "..code)
         log("Response: "..dump(response_body))
     end
+
+    return code, response_body
 end
 
 function request_age(r_date)
