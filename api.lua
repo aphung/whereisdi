@@ -36,6 +36,7 @@ end
 
 function M.get_di_location(server)
     local message = ''
+    local timestamp
     local endpoint = search_endpoint..server
 
     local code, body = get(endpoint)
@@ -53,6 +54,7 @@ function M.get_di_location(server)
                 message = "Location unknown (no recent data received)"
             else
                 message = result["location"]["en_us"]
+                timestamp = convert_to_timestamp(result["date_created"])
             end
         else -- Nil
             message = "No location results available."
@@ -61,7 +63,7 @@ function M.get_di_location(server)
         message = "Unable to contact location server."
     end
 
-    return message;
+    return message, timestamp;
 end
 
 function M.get_mireu(server)
@@ -136,8 +138,8 @@ function post(url, token, body)
     return code, response_body
 end
 
-function request_age(r_date)
-    local request = r_date
+function convert_to_timestamp(date)
+    local request = date
     local pattern = "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)%.(%d+)"
     local xyear, xmonth, xday, xhour, xminute, xseconds, xmillies, xoffset = request:match(pattern)
     local convertedTimestamp = os.time({year = xyear, month = xmonth, day = xday, hour = xhour, min = xminute, sec = xseconds})
@@ -150,6 +152,11 @@ function request_age(r_date)
         convertedTimestamp = convertedTimestamp - (hours * 60 * 60) - (minutes * 60)
     end
 
+    return convertedTimestamp
+end
+
+function request_age(r_date)
+    local convertedTimestamp = convert_to_timestamp(r_date)
     local now = os.time()
 
     return os.difftime(now, convertedTimestamp)
@@ -161,6 +168,6 @@ function disp_time(time)
     local minutes = math.floor(math.mod(time,3600)/60)
     local seconds = math.floor(math.mod(time,60))
     return string.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes, seconds)
-  end  
+end  
 
 return M

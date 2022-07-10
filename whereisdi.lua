@@ -6,6 +6,8 @@ _addon.language = 'English'
 
 require('luau')
 require('strings')
+defaults = require('defaults')
+texts = require('texts')
 config = require('config')
 api = require('api')
 
@@ -15,11 +17,12 @@ local status = { "0000002e,00000120,00000000,0000000a", "0000002d,00000120,00000
     "0000002e,00000123,00000002,0000000a", "0000002d,00000123,00000002,00000002", "0000002f,00000123,00000002,00000002", "00000031,00000123,00000002,00000002",
     "0000002f,00000123,00000002,00000003", "00000031,00000123,00000002,00000003" }
 
---Config
-defaults = { }
-defaults.send = true
-settings = config.load(defaults)
-config.save(settings)
+
+local settings = config.load(defaults)
+local di_box = texts.new('${di_location} ${di_timer}', defaults.domain_invasion, settings)
+
+local location
+local location_timestamp = os.time()
 
 windower.register_event('load','login',function ()
     if windower.ffxi.get_info().logged_in then
@@ -40,6 +43,28 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
     end
 end)
 
+windower.register_event('time change', function(new, old)
+    if settings.show == true then
+        if new % 5 == 0 then
+            local api_loc, timestamp = api.get_di_location(windower.ffxi.get_info().server)
+
+            if api_loc ~= location then
+                --location_timestamp = os.time() 
+                location_timestamp = timestamp
+                location = api_loc
+                di_box.di_location = location
+            end
+        end 
+    end
+end)
+
+windower.register_event('incoming chunk', function(id, original, modified, injected, blocked)
+    if settings.show == true then
+        local timer = os.time() - location_timestamp
+        di_box.di_timer = disp_time(timer)
+    end
+end)
+
 windower.register_event('addon command', function(command, ...)
     command = command and command:lower() or 'status'
     local args = L{...}
@@ -53,8 +78,16 @@ windower.register_event('addon command', function(command, ...)
         config.save(settings)
     elseif command == 'mireu' then
         log(api.get_mireu(windower.ffxi.get_info().server))
+    elseif command == 'show' then
+        settings.show = true
+        local loc, timestamp = api.get_di_location(windower.ffxi.get_info().server)
+        location = loc
+        di_box.di_location = location
+        location_timestamp = timestamp
+        di_box:show()
     else
-        log(api.get_di_location(windower.ffxi.get_info().server))
+        location = api.get_di_location(windower.ffxi.get_info().server)
+        log(location)
     end
 end)
 
@@ -65,9 +98,27 @@ function locate(table, value)
     return false
 end
 
+function disp_time(time)
+    local minutes = math.floor(math.mod(time,3600)/60)
+    local seconds = math.floor(math.mod(time,60))
+    local result
+
+    if minutes == 0 then
+        result = string.format("(%ds)", seconds)
+    else
+        result = string.format("(%dm%ds)", minutes, seconds)
+    end
+
+    return result
+end  
+
 function login()
     local server_id = windower.ffxi.get_info().server
     api.login(windower.ffxi.get_player().name, server_id, res.servers[server_id].name)
+end
+
+function set_timestamp()
+    location_timestamp = os.time()
 end
 
 function isempty(s)
