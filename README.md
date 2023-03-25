@@ -16,7 +16,7 @@ Windower addon for getting the current location of the Domain Invasion. The data
 
 ## Usage
 
-* Type `//whereisdi` or `//di` to get the current location for your sevewr.
+* Type `//whereisdi` or `//di` to get the current location for your server.
 * You may receive an error is either the inforatmion server is down or there is not enough data received from other users to provide a reliable location.
 
 ## Settings
