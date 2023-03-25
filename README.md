@@ -1,7 +1,7 @@
 # Whereisdi
 
 **Author:**  Kosumi (Asura)<br>
-**Version:**  1.0.0<br>
+**Version:**  1.0.1<br>
 **Date:** May 5, 2022<br>
 
 ## Description
@@ -34,9 +34,6 @@ Windower addon for getting the current location of the Domain Invasion. The data
 //di
 //di send
 ```
-## Whereisdi on Asura
-
-For the time being, the player character Whereisdi will continue to function and will continue to provide Domain Invasion location to players of the Asura server directly by /tell. This addon is not a requirement to continue using Whereisdi by tells. However, this addon should continue to work even when the character Whereisdi is offline.
 
 ## Privacy
 
