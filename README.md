@@ -1,8 +1,8 @@
 # Whereisdi
 
 **Author:**  Kosumi (Asura)<br>
-**Version:**  1.0.1<br>
-**Date:** May 5, 2022<br>
+**Version:**  1.0.3<br>
+**Date:** March 25, 2023<br>
 
 ## Description
 
