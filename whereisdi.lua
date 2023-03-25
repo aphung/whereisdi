@@ -67,6 +67,11 @@ end
 
 function login()
     local server_id = windower.ffxi.get_info().server
+    if type(res.servers[server_id]) ~= 'table' or not res.servers[server_id].name then
+        print('WhereisDI: private servers are not supported. Unloading.')
+        windower.send_command('lua unload whereisdi')        
+        return
+    end
     api.login(windower.ffxi.get_player().name, server_id, res.servers[server_id].name)
 end
 
