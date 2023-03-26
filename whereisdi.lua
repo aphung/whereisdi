@@ -61,7 +61,7 @@ end)
 windower.register_event('incoming chunk', function(id, original, modified, injected, blocked)
     if settings.show == true then
         local timer = os.time() - location_timestamp
-        di_box.di_timer = disp_time(timer)
+        di_box.di_timer = box_time(timer)
     end
 end)
 
@@ -85,6 +85,17 @@ windower.register_event('addon command', function(command, ...)
         di_box.di_location = location
         location_timestamp = timestamp
         di_box:show()
+    elseif command == 'hide' then
+        settings.show = false
+        di_box:hide()
+    elseif command == 'help' then
+        log("Whereisdi by Kosumi (Asura)")
+        log("Usage: //whereisdi or //di (send, mireu, show, hide)")
+        log("  (none): //di by itself will show lastest known DI information")
+        log("  send: toggle sending unity data to help other users")
+        log("  mireu: get last known mireu pop time")
+        log("  show: show the location data in a box")
+        log("  hide: hide the location data box")
     else
         location = api.get_di_location(windower.ffxi.get_info().server)
         log(location)
@@ -98,7 +109,7 @@ function locate(table, value)
     return false
 end
 
-function disp_time(time)
+function box_time(time)
     local minutes = math.floor(math.mod(time,3600)/60)
     local seconds = math.floor(math.mod(time,60))
     local result
@@ -114,6 +125,11 @@ end
 
 function login()
     local server_id = windower.ffxi.get_info().server
+    if type(res.servers[server_id]) ~= 'table' or not res.servers[server_id].name then
+        print('WhereisDI: private servers are not supported. Unloading.')
+        windower.send_command('lua unload whereisdi')
+        return
+    end
     api.login(windower.ffxi.get_player().name, server_id, res.servers[server_id].name)
 end
 

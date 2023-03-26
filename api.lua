@@ -4,7 +4,7 @@ local https = require("ssl.https")
 local json = require("parse")
 local sha = require("sha2")
 
-local search_endpoint = "https://api.whereisdi.com/items/di_location?fields=*.*&sort=-date_created&limit=1&filter[server][_eq]="
+local search_endpoint = "https://api.whereisdi.com/items/di_location?fields=date_created,location.*&sort=-date_created&limit=1&filter[server][_eq]="
 local location_endpoint = "https://api.whereisdi.com/items/di_location"
 local user_endpoint = "https://api.whereisdi.com/users"
 local mireu_endpoint = "https://api.whereisdi.com/items/di_location?fields=date_created&sort=-date_created&limit=1&filter[location][_in]=00000031000001200000000000000003,00000031000001210000000100000003,00000031000001230000000200000003&filter[server][_eq]="
@@ -36,7 +36,7 @@ end
 
 function M.get_di_location(server)
     local message = ''
-    local timestamp
+    local timestamp = 0
     local endpoint = search_endpoint..server
 
     local code, body = get(endpoint)
@@ -82,7 +82,6 @@ function M.get_mireu(server)
 
             -- Convert to time stamp
             message = "Mireu last defeated "..disp_time(age).." ago."
-
         else -- Nil
             message = "Unable to get last Mireu death time."
         end
