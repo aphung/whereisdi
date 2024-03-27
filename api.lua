@@ -31,7 +31,7 @@ function M.login(player, server_id, server_name)
     local token = sha.sha256(user)
     local body = '{"first_name":"Player '..player_hash..'", "server":"'..server_id..'", "email":"'..user..'", "token":"'..token..'", "role":"8a1a1e19-4eb4-4779-8c1a-4024f40ed4b4"}'
     
-    post(user_endpoint, token, body)
+    post(user_endpoint, "", body)
 end
 
 function M.get_di_location(server)
@@ -109,22 +109,27 @@ function get(url)
     return code, body    
 end
 
-function post(url, token, body)
+function post(endpoint, token, body)
     local response_body = {}
 
     if debug then
         log("Body: "..body)
     end
 
+    endpoint_header = {
+        ["user-agent"] = "whereisdi/".._addon.version,
+        ["content-type"] = "application/json",
+        ["content-length"] = tostring(body:len()),
+    };
+
+    if token ~= nil then
+        endpoint_header["authorization"] = "Bearer "..token
+    end
+
     local res, code, response_headers = https.request{
-        url = location_endpoint;
+        url = endpoint;
         method = "POST";
-        headers = {
-            ["user-agent"] = "whereisdi/".._addon.version,
-            ["content-type"] = "application/json",
-            ["authorization"] = "Bearer "..token,
-            ["content-length"] = tostring(body:len()),
-        };
+        headers = endpoint_header;
         source = ltn12.source.string(body);
         sink = ltn12.sink.table(response_body);
     }
